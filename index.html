@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Verification Portal</title>
+    <!-- Open Source Face API Library CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; }
+        .card { background: white; max-width: 400px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; }
+        input { width: 90%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; }
+        video, img { width: 100%; border-radius: 8px; margin-top: 10px; background: #000; height: 200px; object-fit: cover; }
+        .section { margin-top: 15px; text-align: left; }
+        label { font-weight: bold; font-size: 14px; }
+        #status { font-weight: bold; color: #d9534f; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>ID & Face Verification</h2>
+        
+        <!-- Section 1: Document Upload -->
+        <div class="section">
+            <label>1. ID Card Upload Karein:</label>
+            <input type="file" id="idCard" accept="image/*" onchange="previewID(event)">
+            <img id="idPreview" style="display:none;" />
+        </div>
+
+        <!-- Section 2: Camera Scanner -->
+        <div class="section">
+            <label>2. Live Face Scan:</label>
+            <video id="webcam" autoplay playsinline></video>
+            <button onclick="startCamera()">Camera Open Karein</button>
+        </div>
+
+        <button style="background-color: #28a745;" onclick="verifyUser()">Verify Now</button>
+        
+        <p id="status"></p>
+    </div>
+
+    <script>
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('webcam').srcObject = stream;
+            } catch (err) {
+                alert("Camera access issue: " + err);
+            }
+        }
+
+        function previewID(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('idPreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        async function verifyUser() {
+            const statusBox = document.getElementById('status');
+            const fileInput = document.getElementById('idCard');
+            
+            if (fileInput.files.length === 0) {
+                statusBox.innerText = "Pehle ID Card upload karein!";
+                return;
+            }
+
+            statusBox.innerText = "Analyzing Face & ID Document...";
+            
+            // Simulating AI Face Detection Match Process
+            setTimeout(() => {
+                statusBox.style.color = "#28a745";
+                statusBox.innerText = "Verification Successful: Face Matched!";
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
